@@ -19,15 +19,18 @@ def download_file(url_file):
     Params: url_file -> String
     Returns: None or image file
     '''
+    print(url_file)
     response = requests.get(url_file)
+    print(response.status_code)
     if response.status_code != 200:
         return None
     # Obtener el contenido de la respuesta y guardarlo en un archivo
+    print(response.content)
     response_content = response.content # Store response content to be save later 
     # filename = f'tmp/usuario.png'
-    filename = + f'tmp/{username}.png'
+    filename = f'tmp/{username}.png'
+    print(f'filename={filename}')
     # Crear contexto con With
-
     with open(filename, 'wb') as image:
         image.write(response_content)
         return image
@@ -36,4 +39,6 @@ def download_file(url_file):
 # download_file('https://avatars.githubusercontent.com/u/190476?v=4')
 user = response.json() # From json to python Dict
 ruta = user['avatar_url']
+print(f'ruta={ruta}')
+print(f'endpoint_url={endpoint_url}')
 download_file(ruta)
