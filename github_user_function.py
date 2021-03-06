@@ -18,14 +18,15 @@ def get_user_with_path_endpoint(username, path):
     '''
     return f'{BASE_URL}users/{username}/{path}'
 
-def get_user_with_followers(username, path):
+def get_user_with_followers(username, path, nu_page):
     '''
     Name: get_user
     Params: username -> String
     Returns: Dictionary with user information
     '''
     url = get_user_with_path_endpoint(username, path)
-    response = requests.get(url)
+    parametros = {'per_page':'100', 'page':nu_page}
+    response = requests.get(url, params=parametros)
     if response.status_code != 200:
         return None
     return response.json()

@@ -11,10 +11,14 @@ https://api.github.com/users/{user}/followers
 import csv
 
 from github_user_function import get_user_with_followers
+from github_user_function import get_user
+
 
 #BASE_URL = 'https://api.github.com/'
 
 username = input('Give me a github username:\t')
+PER_PAGE = 100
+page = 1
 #endpoint_url = BASE_URL + f'users/{username}/followers'
 
 
@@ -27,7 +31,22 @@ COLUMNS = ['login', 'id', 'node_id', 'avatar_url', 'gravatar_id', 'url', 'html_u
 # DEFINIR EL ARCHIVO DONDE SE VA A GUARDAR
 FILENAME = f'tmp/{username}_github.csv'
 # SALVAR EL DICCIONARIO
-followers = get_user_with_followers(username, 'followers')
+
+user = get_user(username)
+print('.................................................')
+print(user)
+print('.................................................')
+print(f"Número de seguidores: {user['followers']}")
+followers = user['followers']
+num_pages = followers//PER_PAGE
+print(f'Numero de páginas:{num_pages}')
+faltantes = followers%PER_PAGE
+print(f'Faltantes:{faltantes}')
+if faltantes > 0:
+    num_pages += 1
+print('.................................................')
+print(f'Numero de páginas considerando residuos: {num_pages}')
+print('.................................................')
 
 
 # CREAR UN CONTEXTO
@@ -45,11 +64,13 @@ with open(FILENAME, mode='w', newline='') as csv_file:
     # Escribit el diccionario en el archivo
     # Escribir cada una de las columnas que deseemos
     # Write at least ONE ROW
-    for i in followers:
-        print('-----------------------------------------------------')
-        print(i)
-        writer.writerow(i)
+    for nu_pagina in range(1, num_pages+1):
+        print(f'Obteniendo página No: {nu_pagina} de {num_pages}')
+        followers = get_user_with_followers(username, 'followers', nu_pagina)
+        for i in followers:
+            writer.writerow(i)
 
+print(f'Se han obtenido todos los followers de {username}')
 
 '''
     "login": "KevinHock",
